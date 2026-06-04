@@ -17,3 +17,6 @@ exp/
 
 # Modal logs/artifacts
 modal_volume/
+
+convert_to_gif.py
+README.md.backup
