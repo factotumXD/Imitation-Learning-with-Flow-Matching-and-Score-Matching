@@ -144,7 +144,7 @@ class ScoreMatchingPolicy(BasePolicy):
         action_dim: int,
         chunk_size: int,
         hidden_dims: tuple[int, ...] = (128, 128),
-        sigma: float = 0.1
+        sigma: float = 1
     ) -> None:
         super().__init__(state_dim, action_dim, chunk_size)
 

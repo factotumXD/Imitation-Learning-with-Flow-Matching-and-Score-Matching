@@ -34,7 +34,7 @@ class TrainConfig:
     # The policy type -- mse, flow or score.
     policy_type: PolicyType = "score"
     # The number of denoising steps to use for the flow policy (has no effect for the MSE policy).
-    flow_num_steps: int = 10
+    flow_num_steps: int = 15
     # The action chunk size.
     chunk_size: int = 8
 
