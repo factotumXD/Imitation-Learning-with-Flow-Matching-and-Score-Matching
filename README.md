@@ -111,10 +111,16 @@ Below are visualizations of the trained policies executing the Push-T task:
 | Policy | GIF | Mean Reward |
 |--------|-----|-------------|
 | MSE | ![MSE Policy](gif/mse_policy.gif) | 0.56163 |
-| Flow Matching | ![Flow Matching Policy](gif/flow_policy.gif) | 0.83549 |
+| Flow Matching ($n=10$) | ![Flow Matching Policy](gif/flow_policy.gif) | 0.83549 |
 | Score Matching ($\sigma=1$) | ![Score Matching (sigma=1) Policy](gif/score_sigma1_policy.gif) | 0.32954 |
 | Score Matching ($\sigma=0.1$) | ![Score Matching (sigma=0.1) Policy](gif/score_sigma0.1_policy.gif) | 0.81352 |
 | Score Matching ($\sigma=1,n=20$) |  | 0.22633 |
+| Flow Matching ($n=10$, tau drawn uniformly from 0,0.1,...0.9) | |0.84372 |
+| Flow Matching ($n=10$, tau drawn uniformly from $[0,0.9)$ | |0.83323 |
+| Flow Matching ($n=10$, tau drawn using `sample_t_beta`) | |0.84433 |
+| Flow Matching ($n=10$, tau drawn using `sample_logit_normal`) |  | 0.86964 |
+
+
 
 Evidently, flow matching performs significantly better than MSE regression. At high noise level ($\sigma=1$), score matching yields random-like actions, while at low noise level ($\sigma=0.1$), its performance is close to flow matching.
 

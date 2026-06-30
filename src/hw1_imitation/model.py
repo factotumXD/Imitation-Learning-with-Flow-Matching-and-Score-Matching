@@ -88,9 +88,11 @@ class FlowMatchingPolicy(BasePolicy):
         action_dim: int,
         chunk_size: int,
         hidden_dims: tuple[int, ...] = (128, 128),
+        tau_distribution: TypeAlias = torch.rand,
     ) -> None:
         super().__init__(state_dim, action_dim, chunk_size)
-
+        self.tau_distribution = tau_distribution
+        
         layers = []
         current_size = self.state_dim + self.chunk_size*self.action_dim + 1
         for size in hidden_dims:
@@ -107,7 +109,7 @@ class FlowMatchingPolicy(BasePolicy):
     ) -> torch.Tensor:
         B = state.shape[0]
         a_0 = torch.randn_like(action_chunk)
-        tau = torch.rand(B, 1, device=state.device)
+        tau = self.tau_distribution(size=(B, 1), device=state.device)
         a_tau = tau*action_chunk.view(B,-1) + (1-tau)*a_0.view(B,-1)
         
         input = torch.concat([state, a_tau.view(B,-1), tau], dim=-1)
@@ -134,6 +136,8 @@ class FlowMatchingPolicy(BasePolicy):
             v = self.mlp(input).view(-1, self.chunk_size, self.action_dim)
             action_chunk = action_chunk + v / num_steps
         return action_chunk
+
+
 
 class ScoreMatchingPolicy(BasePolicy):
     """Predicts action chunks with a denoising score matching loss."""
@@ -210,6 +214,7 @@ def build_policy(
     action_dim: int,
     chunk_size: int,
     hidden_dims: tuple[int, ...] = (128, 128),
+    tau_distribution: TypeAlias = torch.rand,
 ) -> BasePolicy:
     if policy_type == "mse":
         return MSEPolicy(
@@ -224,6 +229,7 @@ def build_policy(
             action_dim=action_dim,
             chunk_size=chunk_size,
             hidden_dims=hidden_dims,
+            tau_distribution=tau_distribution,
         )
     if policy_type == "score":
         return ScoreMatchingPolicy(

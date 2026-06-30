@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, TypeAlias
 
 import numpy as np
 import torch
@@ -22,6 +22,7 @@ from hw1_imitation.data import (
 from hw1_imitation.model import build_policy, PolicyType
 from hw1_imitation.evaluation import Logger
 from hw1_imitation.evaluation import evaluate_policy
+from hw1_imitation.utilities import rand_0_to_09,rand_01_steps_inclusive,sample_t_beta,sample_logit_normal
 
 LOGDIR_PREFIX = "exp"
 
@@ -32,9 +33,9 @@ class TrainConfig:
     data_dir: Path = Path("data")
 
     # The policy type -- mse, flow or score.
-    policy_type: PolicyType = "score"
+    policy_type: PolicyType = "flow"
     # The number of denoising steps to use for the flow policy (has no effect for the MSE policy).
-    flow_num_steps: int = 15
+    flow_num_steps: int = 10
     # The action chunk size.
     chunk_size: int = 8
 
@@ -56,6 +57,7 @@ class TrainConfig:
     wandb_project: str = "hw1-imitation"
     # Experiment name suffix for logging and WandB.
     exp_name: str | None = None
+    tau_distribution: TypeAlias = sample_logit_normal
 
 
 def parse_train_config(
@@ -117,6 +119,7 @@ def run_training(config: TrainConfig) -> None:
         action_dim=actions.shape[1],
         chunk_size=config.chunk_size,
         hidden_dims=config.hidden_dims,
+        tau_distribution=config.tau_distribution,
     ).to(device)
 
     exp_name = f"seed_{config.seed}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
