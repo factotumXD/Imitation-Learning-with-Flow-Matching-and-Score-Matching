@@ -1,4 +1,4 @@
-# Imitation Learning with Flow Matching and Score Matching
+# Push-T with Flow Matching and Score Matching
 
 [Github repository](https://github.com/factotumXD/Imitation-Learning-with-Flow-Matching-and-Score-Matching)
 
